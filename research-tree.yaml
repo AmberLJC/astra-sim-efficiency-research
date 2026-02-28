@@ -1,0 +1,17 @@
+project:
+  title: "Improving Training Systems Efficiency via Astra-Sim"
+  domain: "Distributed ML Training / Systems"
+  started: "2026-02-28"
+  status: active
+  repo: "https://github.com/astra-sim/astra-sim"
+  constraints:
+    - "CPU-only (no GPU available)"
+    - "Simulation-based experiments via Astra-Sim"
+
+field_understanding:
+  sota_summary: ""
+  key_papers: []
+  open_problems: []
+  underexplored_areas: []
+
+hypotheses: []
