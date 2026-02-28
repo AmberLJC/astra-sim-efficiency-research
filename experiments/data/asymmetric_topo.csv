@@ -1,0 +1,37 @@
+cid,split,n0,n1,n_total,bw_ratio,msg_mb,wall_ns,ebu,status,error
+8x8_bal_bw8_msg10,8x8_bal,8,8,64,8,10,1838566,11.2282,ok,
+8x8_bal_bw8_msg100,8x8_bal,8,8,64,8,100,2121422,97.3113,ok,
+8x8_bal_bw8_msg1000,8x8_bal,8,8,64,8,1000,5026048,410.737,ok,
+8x8_bal_bw48_msg10,8x8_bal,8,8,64,48,10,1981030,10.4208,ok,
+8x8_bal_bw48_msg100,8x8_bal,8,8,64,48,100,3546062,58.2162,ok,
+8x8_bal_bw48_msg1000,8x8_bal,8,8,64,48,1000,19184580,107.6064,ok,
+4x16_bal_bw8_msg10,4x16_bal,4,16,64,8,10,3925923,5.2583,ok,
+4x16_bal_bw8_msg100,4x16_bal,4,16,64,8,100,4523754,45.6343,ok,
+4x16_bal_bw8_msg1000,4x16_bal,4,16,64,8,1000,10486662,196.8581,ok,
+4x16_bal_bw48_msg10,4x16_bal,4,16,64,48,10,4231203,4.879,ok,
+4x16_bal_bw48_msg100,4x16_bal,4,16,64,48,100,7576554,27.247,ok,
+4x16_bal_bw48_msg1000,4x16_bal,4,16,64,48,1000,41005062,50.3446,ok,
+16x4_inv_bw8_msg10,16x4_inv,16,4,64,8,10,1026560,20.1097,ok,
+16x4_inv_bw8_msg100,16x4_inv,16,4,64,8,100,1468160,140.6103,ok,
+16x4_inv_bw8_msg1000,16x4_inv,16,4,64,8,1000,5874560,351.4108,ok,
+16x4_inv_bw48_msg10,16x4_inv,16,4,64,48,10,1026560,20.1097,ok,
+16x4_inv_bw48_msg100,16x4_inv,16,4,64,48,100,1536924,134.3192,ok,
+16x4_inv_bw48_msg1000,16x4_inv,16,4,64,48,1000,8280462,249.3078,ok,
+6x11_unbal_bw8_msg10,6x11_unbal,6,11,66,8,10,,,error,gen failed
+6x11_unbal_bw8_msg100,6x11_unbal,6,11,66,8,100,,,error,gen failed
+6x11_unbal_bw8_msg1000,6x11_unbal,6,11,66,8,1000,,,error,gen failed
+6x11_unbal_bw48_msg10,6x11_unbal,6,11,66,48,10,,,error,gen failed
+6x11_unbal_bw48_msg100,6x11_unbal,6,11,66,48,100,,,error,gen failed
+6x11_unbal_bw48_msg1000,6x11_unbal,6,11,66,48,1000,,,error,gen failed
+7x9_unbal_bw8_msg10,7x9_unbal,7,9,63,8,10,,,error,gen failed
+7x9_unbal_bw8_msg100,7x9_unbal,7,9,63,8,100,,,error,gen failed
+7x9_unbal_bw8_msg1000,7x9_unbal,7,9,63,8,1000,,,error,gen failed
+7x9_unbal_bw48_msg10,7x9_unbal,7,9,63,48,10,,,error,gen failed
+7x9_unbal_bw48_msg100,7x9_unbal,7,9,63,48,100,,,error,gen failed
+7x9_unbal_bw48_msg1000,7x9_unbal,7,9,63,48,1000,,,error,gen failed
+3x21_skew_bw8_msg10,3x21_skew,3,21,63,8,10,,,error,gen failed
+3x21_skew_bw8_msg100,3x21_skew,3,21,63,8,100,,,error,gen failed
+3x21_skew_bw8_msg1000,3x21_skew,3,21,63,8,1000,,,error,gen failed
+3x21_skew_bw48_msg10,3x21_skew,3,21,63,48,10,,,error,gen failed
+3x21_skew_bw48_msg100,3x21_skew,3,21,63,48,100,,,error,gen failed
+3x21_skew_bw48_msg1000,3x21_skew,3,21,63,48,1000,,,error,gen failed
