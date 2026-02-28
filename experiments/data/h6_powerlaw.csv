@@ -1,0 +1,5 @@
+msg_mb,threshold_lower_bw,threshold_upper_bw
+1,48,
+10,16,48
+100,4,8
+1000,1,4
