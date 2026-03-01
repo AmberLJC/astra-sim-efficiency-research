@@ -241,3 +241,96 @@ new_sub_experiments:
     status: COMPLETE
     result: "threshold_BW ≈ 94.1 × msg_mb^(-0.571); α=-0.571"
     data: "experiments/data/h6_powerlaw.csv"
+
+  - id: H4_2
+    name: "AC Diminishing Returns When Chunk Size Hits Latency Floor"
+    parent: H4
+    claim: |
+      When ac = splits (fully provisioned), actual speedup is 5.1–5.8× (not 8×),
+      because chunk size shrinks to the point where α (latency per-chunk startup) is
+      non-negligible relative to BW transfer time. The α-β model predicts this:
+      effective_speedup ≈ ac / (1 + α×ac/T_BW). For 1MB/splits=8, the last doubling
+      (ac=4→8) yields only 1.36× (not 2×). For 1000MB, 5.78× at ac=8.
+    score: 3.8
+    status: CONFIRMED_EMPIRICAL
+    evidence:
+      - "h42_underprovision.csv: splits=8, ac=8 speedup = 5.161× (1MB), 5.701× (100MB), 5.775× (1000MB)"
+      - "Perfect halving breaks at ac=4→8 step: 1.355× for 1MB vs expected 2×"
+      - "Consistent with α-β overhead: smaller chunks amplify latency cost"
+      - "Practical implication: true max gain from ac is ~5.5–6× not 8× with default splits=8"
+
+  - id: H7
+    name: "3D Hierarchy Universally Anti-Beneficial Without Scheduling Rescue"
+    claim: |
+      Ring-ring-ring (3D) topology is always slower than flat oneRing without
+      scheduling rescue (localBWAware). Even WITH localBWAware, 3D remains
+      anti-beneficial at BW ratio ≥ 4:1 (lbwAware 3D/flat > 1 for all ratios ≥ 4:1).
+      At ratio=1, lbwAware 3D is beneficial (3D/flat ≈ 0.73–0.79).
+      Anti-benefit is more extreme than 2D: baseline 3D at ratio=48 is 298–661× worse than flat.
+    score: 4.1
+    status: CONFIRMED_EMPIRICAL
+    evidence:
+      - "h7_3d_powerlaw.csv: ALL 15 cells show ANTI-BENEFIT vs flat for 3D-baseline"
+      - "10MB/ratio=48: baseline 3D = 298× flat; lbwAware 3D = 38× flat (both terrible)"
+      - "1000MB/ratio=1: lbwAware 3D/flat = 0.79 (beneficial), 1000MB/ratio=4: 3D/flat ≈ 0.99 (marginal)"
+      - "3D anti-benefit is exponentially worse than 2D at same BW ratio"
+
+  - id: H8
+    name: "AC Partially Rescues 3D Topology but 2D Remains Superior at Ratio >= 4"
+    parent: H7
+    claim: |
+      Higher active-chunks can make 3D beneficial vs flat at BW ratios up to 8:1,
+      but 2D+lbwAware ALWAYS beats 3D+lbwAware at ratios >= 4:1 regardless of AC.
+      At ratio=1:1, 3D+lbwAware beats both flat and 2D for ac <= 4.
+      At ratio=4:1, 3D beats flat for large messages with high ac, but 2D still wins.
+      At ratio=8:1, ac=4 makes 3D beneficial vs flat (0.76×), but 2D still 3× better.
+    score: 4.2
+    status: CONFIRMED_EMPIRICAL
+    evidence:
+      - "h8_3d_ac_sweep.csv: 3D never beats 2D at ratio >= 4:1 across all ac"
+      - "ratio=8, 100MB, ac=4: 2D/flat=0.307 vs 3D/flat=0.981 (2D 3× better)"
+      - "ratio=48: 3D massively worse even with ac=4 (3D/flat=19.6, 2D/flat=0.677)"
+
+  - id: H9
+    name: "3D Beats 2D Only When 2D AC-Bandwidth Has Not Saturated"
+    parent: H8
+    claim: |
+      3D hierarchy beats 2D hierarchy ONLY at BW ratio=1:1 AND when ac < 2D's saturation
+      point. The 3D advantage is equivalent to extra bandwidth parallelism that 2D can
+      replicate by increasing AC. Crossover: for 100MB, 3D beats 2D at ac <= 4 (crossover
+      at ac=5); for 1000MB, 3D beats 2D at ac <= 7 (crossover at ac=8). Beyond the
+      crossover, 3D adds latency overhead without bandwidth gain.
+      Unifying insight: TIERS and AC are SUBSTITUTABLE bandwidth parallelism mechanisms.
+    score: 4.6
+    status: CONFIRMED_EMPIRICAL
+    evidence:
+      - "h10_3d_2d_crossover.csv: 100MB/ratio=1: 3D>2D for ac=1,2,3,4; NOT for ac>=5"
+      - "1000MB/ratio=1: 3D>2D for ac=1,...,7; NOT for ac=8 (3D/2D=1.0 exactly at ac=8)"
+      - "Crossover coincides exactly with 2D's AC saturation point"
+      - "2D at ac=4 (100MB): 2D/flat=0.2101; 3D/flat=0.2037 (3D edges it)"
+      - "2D at ac=5 (100MB): 2D/flat=0.1884; 3D/flat=0.2037 (2D now better)"
+      - "1000MB: 3D/2D=1.0 exactly at ac=8 — tiers and AC are equivalent at the boundary"
+      - "Data: experiments/data/h10_3d_2d_crossover.csv"
+
+  # === QUEUED HYPOTHESES ===
+  - id: H11
+    name: "Unified Tier-AC Substitution Model: N-tier hierarchy = 1-tier with N× AC"
+    claim: |
+      A K-tier Ring hierarchy with ac=1 is performance-equivalent to a 1-tier Ring
+      with ac=K at balanced BW (ratio=1:1). This would explain why 3D+ac=1 matches
+      2D+ac=2 at ratio=1, and why adding tiers is substitutable with adding AC.
+      If true, the optimal system design collapses to: use 1-tier topology, tune AC.
+    score: 4.3
+    status: PENDING_JUDGMENT
+    evidence: []
+
+  - id: H12
+    name: "Scheduling Policy Interaction with 3D: localBWAware insufficient for 3-tier rescue"
+    claim: |
+      For 3-tier hierarchies, FIFO-localBWAware only optimizes intra-node scheduling,
+      leaving inter-node contention unresolved. A 3-tier-aware scheduling policy
+      (localBWAware at EACH tier) would recover 3D's potential. Current ASTRA-sim
+      may lack a 3-tier-aware scheduling primitive, making this a hardware/software gap.
+    score: 3.9
+    status: PENDING_JUDGMENT
+    evidence: []
