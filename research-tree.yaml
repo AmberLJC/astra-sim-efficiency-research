@@ -321,8 +321,12 @@ new_sub_experiments:
       2D+ac=2 at ratio=1, and why adding tiers is substitutable with adding AC.
       If true, the optimal system design collapses to: use 1-tier topology, tune AC.
     score: 4.3
-    status: PENDING_JUDGMENT
-    evidence: []
+    status: REFUTED
+    evidence:
+      - "120-config sweep: K-tier+ac=1 NOT equivalent to 1-tier+ac=K"
+      - "AC gives exact 2× per unit; 2D tier gives only 1.071× at ratio=1"
+      - "AC is 1.87× more efficient per parallelism unit than topology tiers"
+      - "2D tier bonus: ratio-independent 7.1% (robust); 3D degrades: 1.25× at ratio=2, 0.35× at ratio=8"
 
   - id: H12
     name: "Scheduling Policy Interaction with 3D: localBWAware insufficient for 3-tier rescue"
@@ -332,5 +336,55 @@ new_sub_experiments:
       (localBWAware at EACH tier) would recover 3D's potential. Current ASTRA-sim
       may lack a 3-tier-aware scheduling primitive, making this a hardware/software gap.
     score: 3.9
+    status: DEFERRED
+    evidence:
+      - "ASTRA-sim lacks 3-tier-aware scheduling primitive; experiment would be null"
+      - "Prior H7/H8 data: localBWAware already applied but 3D still 2.87× slower at ratio=8"
+      - "Deferred pending simulator extension or stronger theoretical motivation"
+
+  - id: H13
+    name: "AC Dominance: Active-Chunks Are 1.87× More Efficient Than Topology Tiers"
+    claim: |
+      Active-chunks (AC) give perfect 2× speedup per unit for large messages (ratio-independent).
+      Topology tiers give only 7.1% (2D) to 25% (3D) bonus at balanced BW, degrading with asymmetry.
+      Per parallelism unit, AC is 1.87× more efficient than extra tiers.
+      Implication: for any fixed bandwidth budget, maximizing AC dominates adding hierarchy.
+    score: 4.5
+    status: CONFIRMED_EXPLORATORY
+    evidence:
+      - "h11_tier_ac_sub.csv: 1D+ac=2 gives 2.000× over 1D+ac=1 at ALL ratios/msg sizes"
+      - "2D+ac=1 gives 1.071× over 1D+ac=1 at ratio≤4 (only 7% bonus from tier)"
+      - "AC efficiency / Tier efficiency = 2.000 / 1.071 = 1.87× across all configs tested"
+
+  - id: H14
+    name: "2D Tier Bonus Is Ratio-Independent; 3D Tier Bonus Degrades to Anti-Benefit"
+    claim: |
+      The 2D topology bonus (7.1% faster than 1D at same ac) is stable across all BW ratios.
+      The 3D bonus degrades: 25% at ratio≤2, 19% at ratio=4, and becomes 2.87× ANTI-BENEFIT at ratio=8.
+      The 2D crossover does not exist below ratio=8; 3D crossover lies between ratio=2 and ratio=4.
+    score: 4.3
+    status: CONFIRMED_EXPLORATORY
+    evidence:
+      - "h11 data: 2D/1D ratio = 1.071× at all BW ratios 1–8 (100MB, 1000MB)"
+      - "3D/1D ratio: 1.25× at ratio=1, 1.25× at ratio=2, 1.19× at ratio=4, 0.35× at ratio=8"
+      - "3D crossover confirmed between ratio=2 and ratio=4 for 100MB messages"
+
+  - id: H15
+    name: "Optimal AllReduce Design: 2-Tier + Max-AC Dominates 3-Tier + Any AC"
+    claim: |
+      For all BW ratios ≥ 4:1, the optimal topology is 2-tier ring (not 3-tier) with maximum AC.
+      2D+ac=8 < 3D+ac=8 at ratio=4:1, and the gap widens with ratio.
+      Design principle: never use 3-tier ring at BW ratio ≥ 4:1; use 2-tier + high AC instead.
+    score: 4.1
+    status: PENDING_JUDGMENT
+    evidence: []
+
+  - id: H16
+    name: "The 7.1% 2D Tier Bonus Has a Closed-Form Explanation via Routing Path Reduction"
+    claim: |
+      The 7.1% speedup from 2D vs 1D (at balanced BW, ac=1) is explained by reduced routing
+      path length per message: 2D ring with 8+2 NPUs reduces average hop count vs 1D ring
+      with 16 NPUs. If true, the bonus should scale with N and be predictable from topology geometry.
+    score: 3.7
     status: PENDING_JUDGMENT
     evidence: []
